@@ -1,18 +1,26 @@
 import React from 'react'
 import 'antd/dist/antd.min.css';
 import { Button, Input, Select, Form,Table,message,Alert, DatePicker, Spin, Progress } from 'antd';
-import {PoweroffOutlined, UserOutlined} from '@ant-design/icons'
+import Icon,{PoweroffOutlined, UserOutlined,PieChartOutlined,LogoutOutlined,EditOutlined,DeleteOutlined} from '@ant-design/icons'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
 
 const App = () => {
 
+  // const heartIcon = ((props) =>{
+  //   return <Icon component = {() =>{
+  //     return <svg></svg>
+  //   }}
+  //     {...props}
+  //   />
+  // })
+
   // const [showAlert, setShowAlert] = useState(false);
   // const [loading, setLoading] = useState(false);
 
   // const [dataSource, setDataSource] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   // useEffect(()=>{
   //   setLoading(true)
@@ -120,47 +128,122 @@ const App = () => {
   //   },
   // ]
 
-  const columns = [
-    {
-      title: "Student ID",
-      datIndex: 'id',
-    },
-    {
-      title: "Student Name",
-      datIndex: 'name',
-    },
-    {
-      title: "Student Grade",
-      datIndex: 'grade',
-    },
-  ]
+  // const columns = [
+  //   {
+  //     title: "Student ID",
+  //     datIndex: 'id',
+  //   },
+  //   {
+  //     title: "Student Name",
+  //     datIndex: 'name',
+  //   },
+  //   {
+  //     title: "Student Grade",
+  //     datIndex: 'grade',
+  //   },
+  // ]
 
-  const dataSource = [
+  // const dataSource = [
+  //   {
+  //     key:'1',
+  //     id: 1,
+  //     name: "Student name 1",
+  //     grade: 'A+'
+  //   },
+  //   {
+  //     key:'2',
+  //     id: 2,
+  //     name: "Student name 2",
+  //     grade: 'C+'
+  //   },
+  //   {
+  //     key:'3',
+  //     id: 3,
+  //     name: "Student name 3",
+  //     grade: 'B+'
+  //   },
+  //   {
+  //     key:'4',
+  //     id: 4,
+  //     name: "Student name 4",
+  //     grade: 'AB+'
+  //   },
+  // ]
+
+  const [dataSource, setDataSource] = useState([
     {
-      key:'1',
       id: 1,
-      name: "Student name 1",
-      grade: 'A+'
-    },
-    {
-      key:'2',
+      name: 'John',
+      email: 'john@gmail.com',
+      address: "John Address"
+    },{
       id: 2,
-      name: "Student name 2",
-      grade: 'C+'
+      name: 'Harry',
+      email: 'harry@gmail.com',
+      address: "Harry Address"
     },
     {
-      key:'3',
       id: 3,
-      name: "Student name 3",
-      grade: 'B+'
+      name: 'Marry',
+      email: 'marry@gmail.com',
+      address: "Mary Address"
     },
-    {
-      key:'4',
-      id: 4,
-      name: "Student name 4",
-      grade: 'AB+'
-    },
-  ]
+  ])
+
+
+  const columns = [{
+    key:'1',
+    title: 'ID',
+    dataIndex: 'id'
+  },
+  {
+    key:'2',
+    title:'Name',
+    dataIndex: 'name'
+  },
+  {
+    key:'3',
+    title:'Email',
+    dataIndex: 'email'
+  },
+  {
+    key:'4',
+    title:'Address',
+    dataIndex: 'address'
+  }, 
+  {
+    key:'5',
+    title: "Actions",
+    render : (record) =>{
+       return (
+        <>
+          <EditOutlined />
+          <DeleteOutlined onClick={()=>{onDeleteStudent(record)}} style={{color:'red', marginLeft: '10px'}}/>
+        </>
+       )
+    }
+  }
+];
+
+const onAddStudent = () =>{
+  const randomNumber = parseInt(Math.random()*1000);
+  const newStudent = {
+    id: randomNumber,
+    name: "Name" + randomNumber,
+    email: randomNumber + '@gmail.com',
+    address: "Address"+ randomNumber,
+  }
+      setDataSource((pre)=>{
+        return [...pre, newStudent]
+      })
+}
+
+const onDeleteStudent = (record) =>{
+  setDataSource(pre =>{
+    pre.filter(student => student.id != record.id);
+  })
+}
+
 
   
   return (
@@ -234,12 +317,23 @@ const App = () => {
 
     {/* <Table columns={columns} dataSource={dataSource} pagination={true}></Table> */}
 
-
+{/* 
     <Table columns={columns} dataSource={dataSource}>
 
-    </Table>
+    </Table> */}
 
 
+    {/* ICONS */}
+
+    {/* <PieChartOutlined style={{color:'purple', fontSize: '100'}} /> */}
+    {/* <Button icon={<LogoutOutlined style={{color: 'purple'}}/>}> Button with icon </Button> */}
+
+    
+
+    <Button onClick={onAddStudent}>Add a New Student</Button>
+    <Table dataSource={dataSource}
+    columns={columns}
+    ></Table>
     
    </>
   )

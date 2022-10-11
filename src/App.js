@@ -1,12 +1,14 @@
 import React from 'react'
 import 'antd/dist/antd.min.css';
-import { Button, Input, Select, Form,Table,message,Alert, DatePicker, Spin, Progress } from 'antd';
+import { Button, Input, Select, Form,Table,message,Alert, DatePicker, Spin, Progress,Modal } from 'antd';
 import Icon,{PoweroffOutlined, UserOutlined,PieChartOutlined,LogoutOutlined,EditOutlined,DeleteOutlined} from '@ant-design/icons'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
 
 const App = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
 
   // const heartIcon = ((props) =>{
   //   return <Icon component = {() =>{
@@ -217,8 +219,15 @@ const App = () => {
     render : (record) =>{
        return (
         <>
-          <EditOutlined />
-          <DeleteOutlined onClick={()=>{onDeleteStudent(record)}} style={{color:'red', marginLeft: '10px'}}/>
+          <EditOutlined onClick={() =>{
+            onEditStudents(record)
+            }}/>
+          <DeleteOutlined
+              onClick={() => {
+                onDeleteStudent(record);
+              }}
+              style={{ color: "red", marginLeft: 12 }}
+            />
         </>
        )
     }
@@ -239,13 +248,23 @@ const onAddStudent = () =>{
 }
 
 const onDeleteStudent = (record) =>{
-  setDataSource(pre =>{
-    pre.filter(student => student.id != record.id);
+  Modal.confirm({
+    title: "Are you sure, you want to delete a student records? ",
+    okType: 'danger',
+    onOk: () =>{
+      setDataSource((pre) => {
+        return pre.filter((student) => student.id !== record.id);
+      });
+    }
+    
   })
-}
 
-
+const onEditStudents = (record) =>{
+  setIsEditing(true);
+  setEditingStudent({ ...record });
+}  
   
+}  
   return (
    <>
    {/* Button */}
@@ -334,6 +353,51 @@ const onDeleteStudent = (record) =>{
     <Table dataSource={dataSource}
     columns={columns}
     ></Table>
+    <Modal
+          title="Edit Student"
+          visible={isEditing}
+          okText="Save"
+          onCancel={() => {
+            resetEditing();
+          }}
+          onOk={() => {
+            setDataSource((pre) => {
+              return pre.map((student) => {
+                if (student.id === editingStudent.id) {
+                  return editingStudent;
+                } else {
+                  return student;
+                }
+              });
+            });
+            resetEditing();
+          }}
+        >
+          <Input
+            value={editingStudent?.name}
+            onChange={(e) => {
+              setEditingStudent((pre) => {
+                return { ...pre, name: e.target.value };
+              });
+            }}
+          />
+          <Input
+            value={editingStudent?.email}
+            onChange={(e) => {
+              setEditingStudent((pre) => {
+                return { ...pre, email: e.target.value };
+              });
+            }}
+          />
+          <Input
+            value={editingStudent?.address}
+            onChange={(e) => {
+              setEditingStudent((pre) => {
+                return { ...pre, address: e.target.value };
+              });
+            }}
+          />
+        </Modal>
     
    </>
   )
